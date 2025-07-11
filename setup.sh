@@ -145,3 +145,35 @@ if [ "$INSTALL_ZSH" = true ]; then
 fi
 
 echo "✅ All selected installations are complete!"
+
+# -------------------------------------
+# Configure Git
+# -------------------------------------
+echo ""
+echo "🛠 Let's configure Git!"
+
+read -p "Enter your Git username: " git_username
+read -p "Enter your Git email: " git_email
+read -p "Do you want to set a default Git editor? (leave blank to skip): " git_editor
+
+echo ""
+echo "Git will be configured as:"
+echo "  Name : $git_username"
+echo "  Email: $git_email"
+if [ -n "$git_editor" ]; then
+  echo "  Editor: $git_editor"
+fi
+
+read -p "Proceed with these settings? (y/n): " confirm_git
+
+if [[ "$confirm_git" =~ ^[Yy]$ ]]; then
+  git config --global user.name "$git_username"
+  git config --global user.email "$git_email"
+  if [ -n "$git_editor" ]; then
+    git config --global core.editor "$git_editor"
+  fi
+  echo "✅ Git configured successfully!"
+else
+  echo "❌ Git configuration skipped."
+fi
+
