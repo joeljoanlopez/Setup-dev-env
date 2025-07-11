@@ -46,7 +46,7 @@ sudo apt install -y git > /dev/null 2>&1
 # -------------------------------------
 # Configure Git
 # -------------------------------------
-echo "\n🛠 Let's configure Git!"
+echo "🛠 Let's configure Git!"
 read -p "Enter your Git username: " git_username
 read -p "Enter your Git email: " git_email
 read -p "Do you want to set a default Git editor? (leave blank to skip): " git_editor
