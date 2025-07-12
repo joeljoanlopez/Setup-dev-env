@@ -115,15 +115,16 @@ fi
 # -------------------------------------
 if [ "$INSTALL_TOOLBOX" = true ]; then
   echo "🧰 Installing JetBrains Toolbox..."
-  JETBRAINS_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release | \
-      grep -oP 'https://download.jetbrains.com/toolbox/jetbrains-toolbox-\K[0-9.-]+(?=\\.tar\\.gz)' | head -n 1)
-  JETBRAINS_VERSION="jetbrains-toolbox-${JETBRAINS_URL}"
-  wget -q "https://download.jetbrains.com/toolbox/${JETBRAINS_VERSION}.tar.gz"
-  tar -xzf "${JETBRAINS_VERSION}.tar.gz" > /dev/null 2>&1
-  sudo mv jetbrains-toolbox-* /opt/jetbrains-toolbox > /dev/null 2>&1
-  sudo chmod +x /opt/jetbrains-toolbox/jetbrains-toolbox > /dev/null 2>&1
-  /opt/jetbrains-toolbox/jetbrains-toolbox &
-  rm "${JETBRAINS_VERSION}.tar.gz"
+  
+  DOWNLOAD_URL="$(curl -s https://www.jetbrains.com/toolbox/download/ | grep -oP 'https://download.jetbrains.com/toolbox/jetbrains-toolbox-[0-9\.]+\.tar\.gz' | head -n 1)"
+  INSTALL_DIR="/opt/jetbrains-toolbox"
+  SYMLINK_NAME="jetbrains-toolbox"
+
+  wget -O ~/jetbrains-toolbox.tar.gz "$DOWNLOAD_URL"
+  tar -xvzf ~/jetbrains-toolbox.tar.gz -C ~/
+  sudo mv ~/jetbrains-toolbox-* "$INSTALL_DIR"
+  sudo ln -s "$INSTALL_DIR/jetbrains-toolbox" /usr/local/bin/"$SYMLINK_NAME"
+  rm ~/jetbrains-toolbox.tar.gz
 fi
 
 # -------------------------------------
