@@ -121,10 +121,8 @@ if [ "$INSTALL_TOOLBOX" = true ]; then
   echo "🧰 Downloading JetBrains Toolbox..."
   
   DOWNLOAD_URL="https://www.jetbrains.com/toolbox-app/download/download-thanks.html?platform=linux"
-  INSTALL_DIR="/opt/jetbrains-toolbox"
-  SYMLINK_NAME="jetbrains-toolbox"
 
-  wget -O ~/Downloads/ "$DOWNLOAD_URL"
+  wget "$DOWNLOAD_URL"
 fi
 
 # -------------------------------------
