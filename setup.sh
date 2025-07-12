@@ -120,7 +120,7 @@ fi
 if [ "$INSTALL_TOOLBOX" = true ]; then
   echo "🧰 Installing JetBrains Toolbox..."
   
-  DOWNLOAD_URL=$(curl -s https://www.jetbrains.com/toolbox/download/ | grep -oP 'https://download.jetbrains.com/toolbox/jetbrains-toolbox-[0-9\.]+\.tar\.gz' | head -n 1)
+  DOWNLOAD_URL="https://www.jetbrains.com/toolbox-app/download/download-thanks.html?platform=linux"
   INSTALL_DIR="/opt/jetbrains-toolbox"
   SYMLINK_NAME="jetbrains-toolbox"
 
