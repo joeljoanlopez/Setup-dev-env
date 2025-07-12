@@ -165,7 +165,7 @@ if [ "$INSTALL_ZSH" = true ]; then
   sudo apt install -y zsh curl git > /dev/null 2>&1
   if [ ! -d "$HOME/.oh-my-zsh" ]; then
     RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c \
-      "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+      "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh > /dev/null 2>&1)" || true
   fi
   echo "Setting Zsh as your default shell (will apply next login)..."
   chsh -s $(which zsh) > /dev/null 2>&1
