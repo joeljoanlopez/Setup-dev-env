@@ -43,14 +43,15 @@ done
 # -------------------------------------
 # System Update + Git First
 # -------------------------------------
-echo "📦 Updating system and installing Git..."
+echo "📦 Updating system..."
 sudo apt update > /dev/null 2>&1 && sudo apt upgrade -y > /dev/null 2>&1
-sudo apt install -y git > /dev/null 2>&1
 
 # -------------------------------------
 # Configure Git
 # -------------------------------------
 if [ "$CONFIGURE_GIT" = true ]; then 
+  echo "Installing and configuring git..."
+  sudo apt install -y git > /dev/null 2>&1
   echo "🛠 Let's configure Git!"
   read -p "Enter your Git username: " git_username
   read -p "Enter your Git email: " git_email
