@@ -118,17 +118,13 @@ fi
 # Install JetBrains Toolbox
 # -------------------------------------
 if [ "$INSTALL_TOOLBOX" = true ]; then
-  echo "🧰 Installing JetBrains Toolbox..."
+  echo "🧰 Downloading JetBrains Toolbox..."
   
   DOWNLOAD_URL="https://www.jetbrains.com/toolbox-app/download/download-thanks.html?platform=linux"
   INSTALL_DIR="/opt/jetbrains-toolbox"
   SYMLINK_NAME="jetbrains-toolbox"
 
-  wget -O ~/jetbrains-toolbox.tar.gz "$DOWNLOAD_URL"
-  tar -xvzf ~/jetbrains-toolbox.tar.gz -C ~/
-  sudo mv ~/jetbrains-toolbox-* "$INSTALL_DIR"
-  sudo ln -s "$INSTALL_DIR/jetbrains-toolbox" /usr/local/bin/"$SYMLINK_NAME"
-  rm ~/jetbrains-toolbox.tar.gz
+  wget -O ~/Downloads/ "$DOWNLOAD_URL"
 fi
 
 # -------------------------------------
