@@ -13,7 +13,7 @@ fi
 # Show checklist
 # -------------------------------------
 CHOICES=$(whiptail --title "Dev Setup Selector" --checklist \
-"Choose the packages to install using SPACE to select and ENTER to confirm:" 20 78 10 \
+"Choose the packages to install using SPACE to select and ENTER to confirm:" 20 78 12 \
 "git"            "Git"                                ON \
 "docker"         "Docker Engine"                      ON \
 "vscode"         "Visual Studio Code"                 ON \
@@ -22,6 +22,7 @@ CHOICES=$(whiptail --title "Dev Setup Selector" --checklist \
 "php"            "PHP & Composer"                     ON \
 "nvm"            "NVM + Node.js LTS"                  ON \
 "zsh"            "Zsh + Oh My Zsh"                    ON \
+"pop-shell"      "Pop Shell (GNOME Extension)"        OFF \
 3>&1 1>&2 2>&3)
 
 # Convert choices into flags
@@ -37,6 +38,7 @@ for choice in $CHOICES; do
     "php") INSTALL_PHP_COMPOSER=true ;;
     "nvm") INSTALL_NVM=true ;;
     "zsh") INSTALL_ZSH=true ;;
+    "pop-shell") INSTALL_POP_SHELL=true ;;
   esac
 done
 
@@ -167,6 +169,20 @@ if [ "$INSTALL_ZSH" = true ]; then
   fi
   echo "Setting Zsh as your default shell (will apply next login)..."
   chsh -s $(which zsh) > /dev/null 2>&1
+fi
+
+# -------------------------------------
+# Install Pop Shell (GNOME Extension)
+# -------------------------------------
+if [ "$INSTALL_POP_SHELL" = true ]; then
+  echo "🧩 Installing Pop Shell for GNOME..."
+
+  sudo apt install -y gnome-shell-extension-pop-shell > /dev/null 2>&1
+
+  # Enable the extension for the user
+  gnome-extensions enable pop-shell@system76.com 2>/dev/null || {
+    echo "You may need to log out and log back in, or enable the extension via GNOME Extensions app."
+  }
 fi
 
 echo "🎉 All selected installations are complete!"
