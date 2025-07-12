@@ -132,7 +132,7 @@ if [ "$INSTALL_TOOLBOX" = true ]; then
   fi
 
   # Download the latest version to the Downloads folder
-  wget "$DOWNLOAD_URL" -P ~/Downloads > /dev/null 2>&1
+  wget "$DOWNLOAD_URL" -P ~/Downloads/ > /dev/null 2>&1
 fi
 
 
