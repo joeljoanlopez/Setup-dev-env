@@ -1,6 +1,12 @@
 # Setup-dev-env
 This is a scripts that sets your development environment with a simple command
 
+# Prerrequisites
+You just need curl installed to run the script:
+```bash
+sudo apt install curl
+```
+
 # Run
 You just need to run the following command in your terminal
 ```bash
