@@ -117,24 +117,20 @@ fi
 # -------------------------------------
 # Install JetBrains Toolbox
 # -------------------------------------
-# -------------------------------------
-# Install JetBrains Toolbox
-# -------------------------------------
 if [ "$INSTALL_TOOLBOX" = true ]; then
   echo "🧰 Installing Jetbrains Toolbox..."
 
   # Get the latest toolbox URL by scraping the JetBrains Toolbox download page
   DOWNLOAD_URL=$(curl -s https://www.jetbrains.com/toolbox-app/ | grep -oP 'https://download\.jetbrains\.com/toolbox/jetbrains-toolbox-[^"]+\.tar\.gz' | head -n 1)
+  DOWNLOAD_PATH=~/Downloads/$(basename "$DOWNLOAD_URL")
 
   if [ -z "$DOWNLOAD_URL" ]; then
     echo "❌ Failed to fetch the latest JetBrains Toolbox URL."
     exit 1
   fi
-
-  # Download the latest version to the Downloads folder
-  wget "$DOWNLOAD_URL" -P ~/Downloads/ > /dev/null 2>&1
+  
+  wget "$DOWNLOAD_URL" -O "$DOWNLOAD_PATH" > /dev/null 2>&1fi
 fi
-
 
 # -------------------------------------
 # Install PHP & Composer
