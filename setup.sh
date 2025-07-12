@@ -177,12 +177,11 @@ fi
 if [ "$INSTALL_POP_SHELL" = true ]; then
   echo "🧩 Installing Pop Shell for GNOME..."
 
-  sudo apt install -y gnome-shell-extension-pop-shell > /dev/null 2>&1
-
-  # Enable the extension for the user
-  gnome-extensions enable pop-shell@system76.com 2>/dev/null || {
-    echo "You may need to log out and log back in, or enable the extension via GNOME Extensions app."
-  }
+  sudo apt install node-typescript make gnome-shell-extension-prefs -y > /dev/null 2>&1
+  git clone https://github.com/pop-os/shell.git > /dev/null 2>&1
+  cd shell > /dev/null 2>&1
+  git checkout master_noble > /dev/null 2>&1
+  make local-install > /dev/null 2>&1
 fi
 
 echo "🎉 All selected installations are complete!"
