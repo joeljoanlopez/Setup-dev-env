@@ -24,6 +24,8 @@ CHOICES=$(whiptail --title "Dev Setup Selector" --checklist \
 3>&1 1>&2 2>&3)
 
 # Convert choices into flags
+CHOICES=$(echo "$CHOICES" | tr -d '"')
+
 for choice in $CHOICES; do
   case $choice in
     "docker") INSTALL_DOCKER=true ;;
