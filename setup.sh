@@ -85,7 +85,6 @@ if [ "$INSTALL_DOCKER" = true ]; then
   sudo apt update > /dev/null 2>&1
   sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null 2>&1
   sudo usermod -aG docker $USER > /dev/null 2>&1
-  newgrp docker
 fi
 
 # -------------------------------------
