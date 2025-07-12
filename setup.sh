@@ -14,6 +14,7 @@ fi
 # -------------------------------------
 CHOICES=$(whiptail --title "Dev Setup Selector" --checklist \
 "Choose the packages to install using SPACE to select and ENTER to confirm:" 20 78 10 \
+"git"            "Git"                                ON \
 "docker"         "Docker Engine"                      ON \
 "vscode"         "Visual Studio Code"                 ON \
 "chrome"         "Google Chrome"                      ON \
@@ -28,6 +29,7 @@ CHOICES=$(echo "$CHOICES" | tr -d '"')
 
 for choice in $CHOICES; do
   case $choice in
+    "git") INSTALL_GIT=true ;;
     "docker") INSTALL_DOCKER=true ;;
     "vscode") INSTALL_VSCODE=true ;;
     "chrome") INSTALL_CHROME=true ;;
@@ -48,25 +50,27 @@ sudo apt install -y git > /dev/null 2>&1
 # -------------------------------------
 # Configure Git
 # -------------------------------------
-echo "🛠 Let's configure Git!"
-read -p "Enter your Git username: " git_username
-read -p "Enter your Git email: " git_email
-read -p "Do you want to set a default Git editor? (leave blank to skip): " git_editor
-
-echo ""
-echo "Git will be configured as:"
-echo "  Name : $git_username"
-echo "  Email: $git_email"
-[ -n "$git_editor" ] && echo "  Editor: $git_editor"
-read -p "Proceed with these settings? (y/n): " confirm_git
-
-if [[ "$confirm_git" =~ ^[Yy]$ ]]; then
-  git config --global user.name "$git_username" > /dev/null 2>&1
-  git config --global user.email "$git_email" > /dev/null 2>&1
-  [ -n "$git_editor" ] && git config --global core.editor "$git_editor" > /dev/null 2>&1
-  echo "✅ Git configured successfully!"
-else
-  echo "❌ Git configuration skipped."
+if [ "$CONFIGURE_GIT" = true ]; then 
+  echo "🛠 Let's configure Git!"
+  read -p "Enter your Git username: " git_username
+  read -p "Enter your Git email: " git_email
+  read -p "Do you want to set a default Git editor? (leave blank to skip): " git_editor
+  
+  echo ""
+  echo "Git will be configured as:"
+  echo "  Name : $git_username"
+  echo "  Email: $git_email"
+  [ -n "$git_editor" ] && echo "  Editor: $git_editor"
+  read -p "Proceed with these settings? (y/n): " confirm_git
+  
+  if [[ "$confirm_git" =~ ^[Yy]$ ]]; then
+    git config --global user.name "$git_username" > /dev/null 2>&1
+    git config --global user.email "$git_email" > /dev/null 2>&1
+    [ -n "$git_editor" ] && git config --global core.editor "$git_editor" > /dev/null 2>&1
+    echo "✅ Git configured successfully!"
+  else
+    echo "❌ Git configuration skipped."
+  fi
 fi
 
 # -------------------------------------
