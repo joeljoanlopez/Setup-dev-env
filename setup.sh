@@ -18,7 +18,7 @@ CHOICES=$(whiptail --title "Dev Setup Selector" --checklist \
 "docker"         "Docker Engine"                      ON \
 "vscode"         "Visual Studio Code"                 ON \
 "chrome"         "Google Chrome"                      ON \
-"toolbox"        "JetBrains Toolbox"                  ON \
+"PHPStorm"   "PHP Storm EAP"                      ON \
 "php"            "PHP & Composer"                     ON \
 "nvm"            "NVM + Node.js LTS"                  ON \
 "zsh"            "Zsh + Oh My Zsh"                    ON \
@@ -34,7 +34,7 @@ for choice in $CHOICES; do
     "docker") INSTALL_DOCKER=true ;;
     "vscode") INSTALL_VSCODE=true ;;
     "chrome") INSTALL_CHROME=true ;;
-    "toolbox") INSTALL_TOOLBOX=true ;;
+    "PHPStorm") INSTALL_TOOLBOX=true ;;
     "php") INSTALL_PHP_COMPOSER=true ;;
     "nvm") INSTALL_NVM=true ;;
     "zsh") INSTALL_ZSH=true ;;
@@ -121,7 +121,7 @@ fi
 # Install JetBrains Toolbox
 # -------------------------------------
 if [ "$INSTALL_TOOLBOX" = true ]; then
-  echo "🧰 Installing Jetbrains Toolbox..."
+  echo "🧰 Installing PHP Storm EAP..."
 
   sudo snap install phpstorm --edge --classic
 fi
