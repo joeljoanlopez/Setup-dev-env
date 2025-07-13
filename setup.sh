@@ -13,16 +13,18 @@ fi
 # Show checklist
 # -------------------------------------
 CHOICES=$(whiptail --title "Dev Setup Selector" --checklist \
-"Choose the packages to install using SPACE to select and ENTER to confirm:" 20 78 12 \
+"Choose the packages to install using SPACE to select and ENTER to confirm:" 20 78 14 \
 "git"            "Git"                                ON \
 "docker"         "Docker Engine"                      ON \
 "vscode"         "Visual Studio Code"                 ON \
 "chrome"         "Google Chrome"                      ON \
-"PHPStorm"   "PHP Storm EAP"                      ON \
+"PHPStorm"       "PHP Storm EAP"                      ON \
 "php"            "PHP & Composer"                     ON \
 "nvm"            "NVM + Node.js LTS"                  ON \
 "zsh"            "Zsh + Oh My Zsh"                    ON \
 "pop-shell"      "Pop Shell (GNOME Extension)"        OFF \
+"spotify"        "Spotify (Snap)"                     OFF \
+"warp"           "Warp Terminal"                      OFF \
 3>&1 1>&2 2>&3)
 
 # Convert choices into flags
@@ -39,6 +41,8 @@ for choice in $CHOICES; do
     "nvm") INSTALL_NVM=true ;;
     "zsh") INSTALL_ZSH=true ;;
     "pop-shell") INSTALL_POP_SHELL=true ;;
+    "spotify") INSTALL_SPOTIFY=true ;;
+    "warp") INSTALL_WARP=true ;;
   esac
 done
 
@@ -182,6 +186,24 @@ if [ "$INSTALL_POP_SHELL" = true ]; then
   cd shell > /dev/null 2>&1
   git checkout master_noble > /dev/null 2>&1
   make local-install > /dev/null 2>&1
+fi
+
+# ------------------------
+# Install Spotify (Snap)
+# ------------------------
+if [ "$INSTALL_SPOTIFY" = true ]; then
+  echo "🎵 Installing Spotify (Snap)..."
+  sudo snap install spotify
+fi
+
+# -----------------------
+# Install Warp Terminal
+# -----------------------
+if [ "$INSTALL_WARP" = true ]; then
+  echo "🚀 Installing Warp Terminal..."
+  wget https://releases.warp.dev/linux/deb/warp-latest-amd64.deb
+  sudo apt install -y ./warp-latest-amd64.deb
+  rm warp-latest-amd64.deb
 fi
 
 echo "🎉 All selected installations are complete!"
