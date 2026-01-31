@@ -103,10 +103,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
 # Load NVM into current shell
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \.
-"$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \.
-"$NVM_DIR/bash_completion"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Install Node.js LTS
 nvm install --lts
@@ -151,8 +149,8 @@ sudo dnf install -y zsh
 
 # Install Oh My Zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    sh -c "
-$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    sh -c "");
+fi
     echo "✓ Oh My Zsh installed"
 else
     echo "✓ Oh My Zsh already installed"
@@ -168,7 +166,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 EOF
     echo "✓ NVM configuration added to .zshrc"
-f
+fi
+
 # Change default shell to Zsh
 if [ "$SHELL" != "$(which zsh)" ]; then
     echo ""
