@@ -4,7 +4,7 @@ This is a scripts that sets your development environment with a simple command
 # Prerrequisites
 You just need curl installed to run the script:
 ```bash
-sudo apt install curl
+sudo dnf install curl
 ```
 
 # Run
@@ -16,9 +16,6 @@ bash <(curl -s https://raw.githubusercontent.com/joeljoanlopez/Setup-dev-env/mai
 It lets you install the following packages
 - git
 - Docker Engine
-- VSCode
-- Google chrome
-- Jetbrains Toolbox
 - PHP + composer
 - nvm + Node.js LTS
 - zsh + OhMyZsh
