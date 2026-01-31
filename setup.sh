@@ -1,161 +1,155 @@
 #!/bin/bash
 
-# Asegurarse de que whiptail está instalado (suele venir por defecto en Ubuntu)
+# Comprobación de whiptail
 if ! command -v whiptail &> /dev/null; then
     sudo apt update && sudo apt install -y whiptail
 fi
 
-# Definir la lista de opciones para el menú
-# Formato: TAG "Descripción" ESTADO
-CHOICES=$(whiptail --title "Instalador Personalizado Ubuntu" --checklist \
-"Usa ESPACIO para marcar/desmarcar y ENTER para confirmar." 20 78 12 \
-"GIT" "Git - Control de versiones" ON \
-"DOCKER" "Docker Engine & Compose" ON \
-"ZSH" "Oh My Zsh + Zsh Shell" ON \
+# MENU DE SELECCIÓN ACTUALIZADO
+CHOICES=$(whiptail --title "Instalador Ubuntu Dev" --checklist \
+"Marca con ESPACIO qué quieres instalar:" 22 78 14 \
+"GIT" "Git" ON \
+"DOCKER" "Docker + Compose" ON \
+"PHP" "PHP 8.3 + Composer + Exts" ON \
+"NODE" "NVM + Node.js LTS" ON \
+"ZSH" "Oh My Zsh" ON \
 "BRAVE" "Brave Browser" ON \
-"VSCODE" "Visual Studio Code" ON \
+"VSCODE" "VS Code" ON \
 "WARP" "Warp Terminal" ON \
 "JB_TOOLBOX" "JetBrains Toolbox" ON \
 "UNITY" "Unity Hub" ON \
 "STEAM" "Steam" ON \
 "DISCORD" "Discord" ON \
-"TELEGRAM" "Telegram Desktop" ON \
+"TELEGRAM" "Telegram" ON \
 "SPOTIFY" "Spotify" ON \
-"TAILSCALE" "Tailscale VPN" ON \
+"TAILSCALE" "Tailscale" ON \
 "SYNCTHING" "Syncthing" ON \
-"BTOP" "Btop (Monitor de recursos)" ON \
+"BTOP" "Btop" ON \
 3>&1 1>&2 2>&3)
 
-# Si el usuario cancela, salir
-if [ $? -ne 0 ]; then
-    echo "Instalación cancelada por el usuario."
-    exit 0
-fi
+if [ $? -ne 0 ]; then echo "Cancelado."; exit 0; fi
 
-# Actualizar sistema base antes de empezar
-echo "--- Actualizando repositorios base... ---"
+echo "--- Iniciando instalación... ---"
+
+# Actualizar sistema y dependencias básicas
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y curl wget gpg software-properties-common apt-transport-https
-
-# Crear directorio de llaveros si no existe
+sudo apt install -y curl wget gpg software-properties-common apt-transport-https build-essential unzip
 sudo mkdir -p /etc/apt/keyrings
 
-# --- BLOQUE DE INSTALACIÓN ---
+# --- INSTALACIONES ---
 
 # 1. GIT
-if [[ $CHOICES == *"GIT"* ]]; then
-    echo ">>> Instalando Git..."
-    sudo apt install -y git build-essential
-fi
+if [[ $CHOICES == *"GIT"* ]]; then sudo apt install -y git; fi
 
 # 2. DOCKER
 if [[ $CHOICES == *"DOCKER"* ]]; then
-    echo ">>> Preparando Docker..."
     sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
     sudo chmod a+r /etc/apt/keyrings/docker.asc
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update
-    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     sudo usermod -aG docker $USER
 fi
 
-# 3. BRAVE BROWSER
-if [[ $CHOICES == *"BRAVE"* ]]; then
-    echo ">>> Preparando Brave..."
-    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+# 3. PHP 8.3 + COMPOSER
+if [[ $CHOICES == *"PHP"* ]]; then
+    echo ">>> Instalando PHP 8.3 y extensiones..."
+    # Repositorio oficial para versiones específicas de PHP
+    sudo add-apt-repository ppa:ondrej/php -y
     sudo apt update
-    sudo apt install -y brave-browser
+    # Instalar PHP 8.3 y las extensiones solicitadas + comunes (curl, mbstring, xml)
+    sudo apt install -y php8.3 php8.3-cli php8.3-common php8.3-bcmath php8.3-zip php8.3-gd php8.3-curl php8.3-mbstring php8.3-xml
+    
+    echo ">>> Instalando Composer..."
+    curl -sS https://getcomposer.org/installer | php
+    sudo mv composer.phar /usr/local/bin/composer
 fi
 
-# 4. VS CODE
+# 4. NODEJS (NVM + LTS)
+if [[ $CHOICES == *"NODE"* ]]; then
+    echo ">>> Instalando NVM y Node LTS..."
+    # Instalar NVM
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    
+    # Cargar NVM temporalmente para instalar Node ahora mismo
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    
+    # Instalar la versión LTS
+    nvm install --lts
+    nvm use --lts
+fi
+
+# 5. BRAVE
+if [[ $CHOICES == *"BRAVE"* ]]; then
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    sudo apt update && sudo apt install -y brave-browser
+fi
+
+# 6. VS CODE
 if [[ $CHOICES == *"VSCODE"* ]]; then
-    echo ">>> Preparando VS Code..."
     wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
     sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
     echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
     rm packages.microsoft.gpg
-    sudo apt update
-    sudo apt install -y code
+    sudo apt update && sudo apt install -y code
 fi
 
-# 5. WARP TERMINAL
+# 7. WARP
 if [[ $CHOICES == *"WARP"* ]]; then
-    echo ">>> Preparando Warp..."
     wget -qO- https://app.warp.dev/apt/gpg.key | gpg --dearmor | sudo tee /usr/share/keyrings/warpdotdev.gpg > /dev/null
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/warpdotdev.gpg] https://app.warp.dev/apt/ stable main" | sudo tee /etc/apt/sources.list.d/warpdotdev.list
-    sudo apt update
-    sudo apt install -y warp-terminal
+    sudo apt update && sudo apt install -y warp-terminal
 fi
 
-# 6. UNITY HUB
+# 8. UNITY
 if [[ $CHOICES == *"UNITY"* ]]; then
-    echo ">>> Preparando Unity Hub..."
     wget -qO - https://hub.unity3d.com/linux/keys/public | gpg --dearmor | sudo tee /usr/share/keyrings/Unity_Technologies_ApS.gpg > /dev/null
     echo "deb [signed-by=/usr/share/keyrings/Unity_Technologies_ApS.gpg] https://hub.unity3d.com/linux/repos/deb stable main" | sudo tee /etc/apt/sources.list.d/unityhub.list
-    sudo apt update
-    sudo apt install -y unityhub
+    sudo apt update && sudo apt install -y unityhub
 fi
 
-# 7. SYNCTHING
+# 9. SYNCTHING
 if [[ $CHOICES == *"SYNCTHING"* ]]; then
-    echo ">>> Preparando Syncthing..."
     sudo curl -fsSL https://syncthing.net/release-key.txt -o /etc/apt/keyrings/syncthing-archive-keyring.asc
     echo "deb [signed-by=/etc/apt/keyrings/syncthing-archive-keyring.asc] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
-    sudo apt update
-    sudo apt install -y syncthing
+    sudo apt update && sudo apt install -y syncthing
 fi
 
-# 8. TAILSCALE
+# 10. TAILSCALE
 if [[ $CHOICES == *"TAILSCALE"* ]]; then
-    echo ">>> Instalando Tailscale..."
     curl -fsSL https://tailscale.com/install.sh | sh
 fi
 
-# 9. APPS SIMPLES (APT/SNAP)
-if [[ $CHOICES == *"BTOP"* ]]; then
-    sudo apt install -y btop
-fi
+# 11. OTROS (Snaps/Apt)
+[[ $CHOICES == *"BTOP"* ]] && sudo apt install -y btop
+[[ $CHOICES == *"STEAM"* ]] && sudo apt install -y steam-installer
+[[ $CHOICES == *"DISCORD"* ]] && sudo snap install discord
+[[ $CHOICES == *"TELEGRAM"* ]] && sudo snap install telegram-desktop
+[[ $CHOICES == *"SPOTIFY"* ]] && sudo snap install spotify
 
-if [[ $CHOICES == *"STEAM"* ]]; then
-    sudo apt install -y steam-installer
-fi
-
-if [[ $CHOICES == *"DISCORD"* ]]; then
-    sudo snap install discord
-fi
-
-if [[ $CHOICES == *"TELEGRAM"* ]]; then
-    sudo snap install telegram-desktop
-fi
-
-if [[ $CHOICES == *"SPOTIFY"* ]]; then
-    sudo snap install spotify
-fi
-
-# 10. JETBRAINS TOOLBOX (Manual)
+# 12. JETBRAINS
 if [[ $CHOICES == *"JB_TOOLBOX"* ]]; then
-    echo ">>> Descargando JetBrains Toolbox..."
+    echo ">>> Bajando JetBrains Toolbox..."
     JB_URL=$(curl -s 'https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release' | grep -Po '"linux":.*?"link":"\K[^"]+')
     mkdir -p $HOME/Downloads/JetBrains
     wget -O $HOME/Downloads/JetBrains/toolbox.tar.gz "$JB_URL"
-    echo "Toolbox descargado en ~/Downloads/JetBrains (requiere instalación manual final)."
 fi
 
-# 11. OH MY ZSH (Al final para que no interrumpa)
+# 13. ZSH (Final)
 if [[ $CHOICES == *"ZSH"* ]]; then
-    echo ">>> Instalando Zsh y Oh My Zsh..."
     sudo apt install -y zsh
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
         sudo chsh -s $(which zsh) $USER
+        
+        # Asegurar que NVM carga en ZSH si se instaló
+        if [[ $CHOICES == *"NODE"* ]]; then
+             echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+             echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
+        fi
     fi
 fi
 
-# LIMPIEZA
 sudo apt autoremove -y
-
-echo "-----------------------------------------------------"
-echo "¡Proceso finalizado!"
-echo "Reinicia el sistema para aplicar cambios (grupos de Docker, Shell Zsh, etc)."
-echo "-----------------------------------------------------"
+echo "¡Instalación completada! Reinicia el equipo."
