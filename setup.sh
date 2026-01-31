@@ -18,7 +18,7 @@ sudo dnf install -y dnf-plugins-core
 # Para Fedora, instalar desde los repositorios oficiales de Remi
 sudo dnf install -y https://rpms.remirepo.net/fedora/remi-release-$(rpm -E %fedora).rpm
 sudo dnf module reset php -y
-sudo dnf module install -y php:remi-8.3
+sudo dnf module enable php:remi-8.3 -y
 
 # Instalar extensiones PHP
 sudo dnf install -y php php-cli php-mbstring php-xml php-curl php-intl php-pdo php-mysqlnd php-bcmath php-json php-zip php-gd php-opcache
@@ -74,7 +74,6 @@ fi
 # Cargar NVM en este shell
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \.
-"$NVM_DIR/nvm.sh"
 
 # Instalar Node.js LTS
 nvm install --lts
