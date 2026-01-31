@@ -16,7 +16,7 @@ echo "🔹 Instalando PHP 8.3 y extensiones comunes..."
 sudo dnf install -y dnf-plugins-core
 
 # Para Fedora, instalar desde los repositorios oficiales de Remi
-sudo dnf install -y https://rpms.remirepo.net/fedora/remi-release-$(rpm -E %fedora).rpm
+sudo dnf install -y https://rpms.remirepo.net/fedora/remi-release-$(rpm -E %fedora).rpm || true
 sudo dnf module reset php -y
 sudo dnf module enable php:remi-8.3 -y
 
@@ -74,6 +74,7 @@ fi
 # Cargar NVM en este shell
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \.
+"$NVM_DIR/nvm.sh"
 
 # Instalar Node.js LTS
 nvm install --lts
