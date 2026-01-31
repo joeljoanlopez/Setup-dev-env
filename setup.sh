@@ -14,9 +14,14 @@ sudo dnf install -y curl wget git unzip tar gcc gcc-c++ make zsh
 ### ===============================
 echo "🔹 Instalando PHP 8.3 y extensiones comunes..."
 sudo dnf install -y dnf-plugins-core
+
+# Para Fedora, instalar desde los repositorios oficiales de Remi
+sudo dnf install -y https://rpms.remirepo.net/fedora/remi-release-$(rpm -E %fedora).rpm
 sudo dnf module reset php -y
-sudo dnf module enable php:8.3 -y
-sudo dnf install -y php php-cli php-mbstring php-xml php-curl php-intl php-pdo php-mysqlnd php-bcmath php-json php-zip
+sudo dnf module install -y php:remi-8.3
+
+# Instalar extensiones PHP
+sudo dnf install -y php php-cli php-mbstring php-xml php-curl php-intl php-pdo php-mysqlnd php-bcmath php-json php-zip php-gd php-opcache
 
 # Verificar versión
 php -v
@@ -35,7 +40,7 @@ if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then
     exit 1
 fi
 
-php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 rm composer-setup.php
 
 composer --version
@@ -45,7 +50,7 @@ composer --version
 ### ===============================
 echo "🔹 Instalando Docker y Docker Compose..."
 sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
 sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Habilitar y arrancar Docker
@@ -54,7 +59,6 @@ sudo systemctl start docker
 
 # Añadir usuario actual a grupo docker
 sudo usermod -aG docker $USER
-
 docker --version
 docker compose version
 
@@ -69,7 +73,8 @@ fi
 
 # Cargar NVM en este shell
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && \.
+"$NVM_DIR/nvm.sh"
 
 # Instalar Node.js LTS
 nvm install --lts
